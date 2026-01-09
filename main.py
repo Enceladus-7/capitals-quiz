@@ -1,31 +1,44 @@
+# Imports the custom logic module containing file handling and game mechanics.
 import quiz_logic
+# Used to shuffle the list of questions.
+import random
 
 def run_quiz():
+    """
+    Main function to run the grography quiz loop.
+    Handles user input, scoring, and display.
+    """
     print("Welcome to the Geography Quiz!")
 
-    # Load the data using the filename.
     file_path = "capitals.txt"
     quiz_data = quiz_logic.load_data(file_path)
 
-    # Check the data loaded, otherwise return an error.
+    # Check the data loaded, overwise return an error.
     if not quiz_data:
         print("Quiz cannot start because data is missing.")
         return
     
-    # Start a score counter and set the number of rounds.
-    score = 0
-    total_rounds = 5
+    # Create a copy of the data and shuffle it.
+    question_pool = quiz_data[:]
+    random.shuffle(question_pool)
 
-    # Loop through the game rounds.
+    # Ensure we don't ask more questions than we have available.
+    total_rounds = 5
+    if total_rounds > len(question_pool):
+        total_rounds = len(question_pool)
+
+    score = 0
+
     for i in range(total_rounds):
-        # Get a random question.
-        question_data = quiz_logic.new_question(quiz_data)
+        # Remove one country from the pool so it cannot be asked again.
+        current_target = question_pool.pop()
+
+        question_data = quiz_logic.generate_question(current_target, quiz_data)
 
         print(f"\nQuestion {i + 1} of {total_rounds}")
         print(f"What is the capital of {question_data['country']}?")
         print("-" * 30)
 
-        # Display the options for the user to pick.
         labels = ["A", "B", "C", "D"]
         options = question_data['options']
 
@@ -35,9 +48,7 @@ def run_quiz():
         # Retreive user input and account for formatting.
         user_choice = input("\nYour Answer (A/B/C/D): ").upper().strip()
 
-        # Check if user returned the correct answer.
         if user_choice in labels:
-            # Find the index of the user's choice.
             choice_index = labels.index(user_choice)
             selected_city = options[choice_index]
 

@@ -1,21 +1,21 @@
+# Used to select random questions and shuffle answer choices.
 import random
 
-# Reads a text file to retreive a list of dictionaries containing a 'country' & 'capital'.
 def load_data(filename):
-    
+    """
+    Reads a text file to retrieve a list of dictionaries containing a 'country' & 'capital'.
+    Handles file not found errors.
+    """
     data = []
 
     try:
         with open(filename) as file:
             for line in file:
-                # Remove any unwanted characters.
                 clean_line = line.strip()
 
-                # Check if line is empty and if so skip it.
                 if not clean_line:
                     continue
 
-                # Split the line at the comma.
                 parts = clean_line.split(',')
 
                 # Check for errors, ensuring we only have two parts (country & capital).
@@ -23,7 +23,6 @@ def load_data(filename):
                     country_name = parts[0].strip()
                     capital_city = parts[1].strip()
 
-                    # Add to our list as a dictionary.
                     data.append({
                         "country": country_name,
                         "capital": capital_city
@@ -35,24 +34,20 @@ def load_data(filename):
         print(f"Error: The file '{filename}' was not found.")
         return[]
 
-# Picks a random country and 3 incorrect choices.
-# Returns a dictionary containing the question and shuffled answers.
-def new_question(data_list):
-    # Select the correct answer.
-    correct_pair = random.choice(data_list)
+def generate_question(target_country, all_data):
+    """
+    Generates options for a specific country provided by main.py
+    """
+    correct_pair = target_country
 
-    # Create a list of incorrect answer options.
-    other_options =  [item for item in data_list if item != correct_pair]
+    other_options =  [item for item in all_data if item != correct_pair]
     wrong_answers = random.sample(other_options, 3)
 
-    # Create a list of all options to pick from.
     all_options = [correct_pair['capital']]
-
-    # Add the wrong answers to the list of all answers.
     for wrong in wrong_answers:
         all_options.append(wrong['capital'])
 
-    # Shuffle the answers so it's not always the same one.
+    # Randomise the position of the correct answer.
     random.shuffle(all_options)
 
     return {
