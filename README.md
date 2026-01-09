@@ -9,7 +9,7 @@ This is a text-based geography quiz application written in Python. It reads coun
 3. **Run:** Open your terminal/command prompt, navigate to the folder, and type:
   python main.py
 4. **Play:**
-   - The game will ask you "What is the capital of [Country]?" and give you for options to pick from.
+   - The game will ask you "What is the capital of [Country]?" and give you four options to pick from.
    - Type the letter (A, B, C, or D) corresponding to your answer.
    - The game tracks your score and displays it at the end.
 
@@ -17,11 +17,12 @@ This is a text-based geography quiz application written in Python. It reads coun
 The project utilises a modular design split into two Python files and one data file.
 
 ### Files
-* **main.py:** The core file which handles the user interface, game loop, and input validation.
-* **quiz_logic.py:** Contains the backend logic. It handles file reading, random question selection and shuffling.
+* **main.py:** The entry point. It manages the game loop, keeps track of the deck of available questions to prevent duplicates, and handles user input.
+* **quiz_logic.py:** Contains the backend logic. It handles parsing the text file and generating random wrong answers for each question.
 *  **capitals.txt:** A comma-delimited text file ('Country,Capital') serving as the database.
 
 ### Key Features
-* **File Handling:** Uses 'with open()' and string parsing ('strip', 'spit') to process raw data without eternal CSV libraries.
+* **Duplicate Prevention:** The program loads all questions into a pool and shuffles them once at the start. Questions are removed (`.pop()`) one by one as they are asked, ensuring the user never sees the same country twice in one game.
+* **File Handling:** Uses 'with open()' and string parsing ('strip', 'split') to process raw data without external CSV libraries.
 * **Error Handling:** Includes 'try/except' blocks to handle 'FileNotFoundError' if the data file is missing.
 * **Scalability:** New questions can be added simply by editing the '.txt' file. No code changes are required.
